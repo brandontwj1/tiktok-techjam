@@ -1,3 +1,11 @@
+## Important for Fantastic5
+
+Steps to get the app running on your phone (expo go) or XCode? I think thats what the macbook version is called:
+
+1. Clone repo
+2. run npm install
+3. run npm install @supabase/supabase-js
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
