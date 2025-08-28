@@ -4,7 +4,11 @@ Steps to get the app running on your phone (expo go) or XCode? I think thats wha
 
 1. Clone repo
 2. run npm install
-3. run npm install @supabase/supabase-js
+3. run npm install @supabase/supabase-js ... (any other installs the terminal asks u to will probably be needed)
+4. in project root, add .env.local file and copy paste the code I sent to the tele chat
+5. Try to run with npx expo start, then use expo go or xcode
+6. Try the buttons on the test db page
+7. let me know if anything is not working
 
 # Welcome to your Expo app 👋
 
