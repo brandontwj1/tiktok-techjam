@@ -9,7 +9,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>Jiayous nichelle</Text>
+      <Text>Jiayous brandon!!! This is consumer acc.</Text>
     </View>
   );
 }

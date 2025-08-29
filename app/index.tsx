@@ -25,7 +25,16 @@ export default function LoginScreen() {
       // Implement Supabase login logic
       console.log('Login attempt:', { emailOrUsername, password });
       
-      // Placeholder success
+      // For now, assume successful login and navigate based on stored account type
+      // In a real app, you'd get the account type from your database/auth service
+      const userAccountType = 'consumer'; // This would come from your auth service
+      
+      if (userAccountType === 'consumer') {
+        router.replace('/(consumer)');
+      } else {
+        router.replace('/(creator)');
+      }
+      
       Alert.alert('Success', 'Welcome back!');
     } catch (error: any) {
       Alert.alert('Login Failed', 'Invalid credentials. Please try again.');
@@ -42,11 +51,26 @@ export default function LoginScreen() {
       // Implement Supabase sign up logic
       console.log('Sign up attempt:', { email, password, username, accountType });
 
-      // Placeholder success
-      Alert.alert('Success', `Welcome ${username}! Your ${accountType} account has been created. You can now login with your username and password.`);
+      // Navigate to appropriate tabs based on account type
+      if (accountType === 'consumer') {
+        router.replace('/(consumer)');
+      } else {
+        router.replace('/(creator)');
+      }
+
+      Alert.alert('Success', `Welcome ${username}! Your ${accountType} account has been created.`);
     } catch (error: any) {
       console.log('Error in handleCreateAccount:', error);
       Alert.alert('Sign Up Failed', error.message);
+    }
+  };
+
+  const handleQuickLogin = (type: 'consumer' | 'creator') => {
+    // Navigate directly to the appropriate tabs based on account type
+    if (type === 'consumer') {
+      router.replace('/(consumer)');
+    } else {
+      router.replace('/(creator)');
     }
   };
 
@@ -162,6 +186,23 @@ export default function LoginScreen() {
           </Text>
         </TouchableOpacity>
       </View>
+
+      {/* Quick Login Shortcuts */}
+      <View style={styles.quickLoginContainer}>
+        <Text style={styles.quickLoginTitle}>Quick Access</Text>
+        <TouchableOpacity 
+          style={styles.quickLoginButton} 
+          onPress={() => handleQuickLogin('consumer')}
+        >
+          <Text style={styles.quickLoginButtonText}>Log in to consumer account</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.quickLoginButton} 
+          onPress={() => handleQuickLogin('creator')}
+        >
+          <Text style={styles.quickLoginButtonText}>Log in to creator account</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -248,5 +289,33 @@ const styles = StyleSheet.create({
   },
   accountTypeButtonTextActive: {
     color: '#fff',
+  },
+  quickLoginContainer: {
+    marginTop: 30,
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#E0E0E0',
+  },
+  quickLoginTitle: {
+    fontSize: 14,
+    color: '#888',
+    textAlign: 'center',
+    marginBottom: 15,
+    fontStyle: 'italic',
+  },
+  quickLoginButton: {
+    backgroundColor: 'transparent',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#4682b4',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  quickLoginButtonText: {
+    color: '#4682b4',
+    fontSize: 14,
+    fontWeight: '500',
   },
 });
