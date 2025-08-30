@@ -125,6 +125,19 @@ export default function TransactionsPage() {
     };
 
     const getTransactionDisplay = (transaction: Transaction) => {
+        // Check if transaction failed
+        if (transaction.status === 'fail') {
+            const receiverUsername = transaction.receiver_username || 'user';
+            return {
+                icon: 'close-circle',
+                color: '#F44336',
+                title: `Failed ${transaction.type === 'topup' ? 'Top Up' : `Gift to @${receiverUsername}`}`,
+                subtitle: 'Transaction Failed',
+                amount: `${transaction.amount}`,
+                amountColor: '#F44336'
+            };
+        }
+        
         if (transaction.type === 'topup') {
             return {
                 icon: 'add-circle',
