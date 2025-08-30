@@ -28,7 +28,7 @@ const calculateWalletBalance = (transactions: any[]) => {
   
   return transactions.reduce((balance, transaction) => {
     // Only process transactions that are not failed
-    if (transaction.status === 'fail') {
+    if (transaction.status === 'fail' || transaction.status.startsWith("Blocked")) {
       return balance; // Don't count failed transactions
     }
     
@@ -218,7 +218,7 @@ export default function ConsumerHome() {
 
   const getTransactionDisplay = (transaction: any) => {
     // Check if transaction failed
-    if (transaction.status === 'fail') {
+    if (transaction.status === 'fail' || transaction.status.startsWith("Blocked")) {
       const receiverUsername = transaction.receiver?.username || 'user';
       return {
         icon: 'close-circle',

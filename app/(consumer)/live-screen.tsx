@@ -17,11 +17,11 @@ import { supabase } from '../../utils/supabase';
 
 // Demo configuration - Replace with actual values
 const getSessionId = () => {
-  return 'b682f8c4-cb77-464a-bd90-eedab21ee016'; // Replace with actual session ID
+  return '62c47ed7-260f-4f60-ba21-a5ba04aab090'; // Replace with actual session ID
 };
 
 const getReceiverId = () => {
-  return 'eb8818e9-98e1-4196-b069-44f5f1261ef7'; // Replace with actual receiver (creator) ID
+  return 'c1441d77-8542-4289-bf96-f61600caa124'; // Replace with actual receiver (creator) ID
 };
 
 const getUserId = () => {
@@ -34,7 +34,7 @@ const calculateWalletBalance = (transactions: any[]) => {
 
   return transactions.reduce((balance, transaction) => {
     // Only process transactions that are not failed
-    if (transaction.status === 'fail') {
+    if (transaction.status === 'fail' || transaction.status.startsWith("Blocked")) {
       return balance; // Don't count failed transactions
     }
 
@@ -151,18 +151,6 @@ export default function LiveScreen() {
 
       if (failure) {
         Alert.alert('Gift Blocked', 'Your gift could not be processed due to risk rules.');
-
-        // Add amount back to user balance (money is always deducted, so refund if a transaction fails)
-        const { error: refundError } = await supabase
-          .from('users')
-          .update({ balance: balance + amount })
-          .eq('user_id', userId);
-
-        if (refundError) {
-          console.error('Error refunding user after blocked gift:', refundError);
-        }
-
-        return;
       }
 
       // Success - show alert and refresh balance

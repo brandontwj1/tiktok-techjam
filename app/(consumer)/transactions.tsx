@@ -48,7 +48,7 @@ export default function TransactionsPage() {
 
         return transactions.reduce((balance, transaction) => {
             // Only process transactions that are not failed
-            if (transaction.status === 'fail') {
+            if (transaction.status === 'fail' || transaction.status.startsWith('Blocked')) {
                 return balance; // Don't count failed transactions
             }
 
@@ -126,7 +126,7 @@ export default function TransactionsPage() {
 
     const getTransactionDisplay = (transaction: Transaction) => {
         // Check if transaction failed
-        if (transaction.status === 'fail') {
+        if (transaction.status === 'fail' || transaction.status.startsWith("Blocked")) {
             const receiverUsername = transaction.receiver_username || 'user';
             return {
                 icon: 'close-circle',
@@ -174,8 +174,16 @@ export default function TransactionsPage() {
             fail: { backgroundColor: '#FFEBEE', color: '#F44336' },
         };
 
-        const style = statusStyles[status as keyof typeof statusStyles] || statusStyles.pending;
+        let style;
+        if (status === 'success' || status.startsWith("Transaction Approved")) {
+            style = statusStyles.success;
+        } else if (status === "pending" || status.startsWith("Review")) {
+            style = statusStyles.pending;
+        } else {
+            style = statusStyles.fail;
+        }
 
+        
         return (
             <View style={[styles.statusBadge, { backgroundColor: style.backgroundColor }]}>
                 <Text style={[styles.statusText, { color: style.color }]}>
