@@ -7,6 +7,7 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: '#2f95dc',
         tabBarStyle: { backgroundColor: '#fff' },
+        headerShown: false
       }}
     >
       <Tabs.Screen
@@ -17,10 +18,17 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="TestDBScreen"
+        name="live-screen"
         options={{
-          title: 'Test DB',
-          tabBarIcon: ({ color }) => <Ionicons name="cog" size={24} color={color} />,
+          title: 'Live',
+          tabBarIcon: ({ color }) => <Ionicons name="videocam" size={24} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="transactions"
+        options={{
+          title: 'Transactions',
+          tabBarIcon: ({ color }) => <Ionicons name="list" size={24} color={color} />,
         }}
       />
     </Tabs>
