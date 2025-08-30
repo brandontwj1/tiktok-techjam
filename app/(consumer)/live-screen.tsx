@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { evaluateTransaction } from '../../risk_logic/transaction_risk_logic';
 import { supabase } from '../../utils/supabase';
 
 // Demo configuration - Replace with actual values
@@ -36,7 +37,7 @@ const calculateWalletBalance = (transactions: any[]) => {
     if (transaction.status === 'fail') {
       return balance; // Don't count failed transactions
     }
-    
+
     // Add amount for topup transactions (success or pending)
     if (transaction.type === 'topup') {
       return balance + parseFloat(transaction.amount);
@@ -80,7 +81,7 @@ export default function LiveScreen() {
       if (transactions) {
         const calculatedBalance = calculateWalletBalance(transactions);
         setBalance(calculatedBalance);
-        
+
         // Update the balance in the users table
         await updateUserBalance(calculatedBalance);
       }
@@ -138,20 +139,31 @@ export default function LiveScreen() {
         return;
       }
 
-      // Create gift transaction with pending status
-      const { data, error } = await supabase
-        .from('transactions')
-        .insert({
-          user_id: userId,
-          receiver_id: receiverId,
-          session_id: sessionId,
-          type: 'gift',
-          amount: amount,
-          timestamp: new Date().toISOString(),
-          status: 'pending',
-        });
+      // Create and evaluate gift transaction
+      const failure = await evaluateTransaction({
+        user_id: userId,
+        receiver_id: receiverId,
+        session_id: sessionId,
+        amount,
+        timestamp: new Date().toISOString(),
+        type: 'gift',
+      });
 
-      if (error) throw error;
+      if (failure) {
+        Alert.alert('Gift Blocked', 'Your gift could not be processed due to risk rules.');
+
+        // Add amount back to user balance (money is always deducted, so refund if a transaction fails)
+        const { error: refundError } = await supabase
+          .from('users')
+          .update({ balance: balance + amount })
+          .eq('user_id', userId);
+
+        if (refundError) {
+          console.error('Error refunding user after blocked gift:', refundError);
+        }
+
+        return;
+      }
 
       // Success - show alert and refresh balance
       Alert.alert('Gift Sent!', `You sent ${amount} coins as a gift!`);
